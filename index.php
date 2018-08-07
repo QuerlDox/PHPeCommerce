@@ -1,5 +1,5 @@
 <?php 
-
+	require_once 'core/init.php';
 	include 'includes/head.php';
 	include 'includes/navigation.php';
 	include 'includes/headerfull.php';
@@ -99,9 +99,9 @@
 		
     </div>
 
-
-	<footer class="text-center" id="footer">&copy; Copyright 2017-2018  Harold's Boutique</footer>
-
+<?php 
+	include 'includes/footer.php';
+?>
 	<!-- Details Modal-->
 	<!-- end of details modal-->
 
@@ -110,9 +110,7 @@
 			var vscroll = jQuery(this).scrollTop();
 			jQuery('#logotext').css({"transform":"translate(0px, "+vscroll/2 + "px)"});
 		});
-
-
-		
 	</script>
+	
 </body>
 </html>
