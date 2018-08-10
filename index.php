@@ -29,7 +29,7 @@
 				<img src="<?php echo $featured['image'] ?>" alt="<?php echo $featured['title']?>" class="img-thumb" />
 				<p class="list-price text-danger">List Price:  <s><?php echo $featured['list_price'] ?></s></p>
 				<p class="price">Our Price: <?php echo $featured['price']?></p>
-				<button type="button" class="btn btn-sm btn-success" data-toggle="modal" data-target="#detail-1">details</button>
+				<button type="button" class="btn btn-sm btn-success" onclick="detailsmodal(<?php echo $featured['id']?>);">details</button>
 			</div>
 			<?php endwhile; ?>
 			</div>
@@ -39,7 +39,7 @@
 		<!-- Right Side Bar-->
 <?php
 	include 'includes/rightsidebar.php';
-	include 'includes/detailsmodal.php';
+//	include 'includes/detailsmodal.php';
 	
 ?>		
 		
@@ -56,6 +56,23 @@
 			var vscroll = jQuery(this).scrollTop();
 			jQuery('#logotext').css({"transform":"translate(0px, "+vscroll/2 + "px)"});
 		});
+
+		function detailsmodal(id){
+			var data = {"id" : id};
+			jQuery.ajax({
+			//	url : <?php echo BASEURL;?> + 'includes/detailsmodal.php',
+				url : 'includes/detailsmodal.php',
+				method : "post",
+				data: data,
+				success: function(data){
+					jQuery('body').append(data);
+					jQuery('#details-modal').modal('toggle');
+				},
+				error: function(){
+					alert("detailsmodal function error!");
+				}
+			});
+		}
 	</script>
 	
 </body>
