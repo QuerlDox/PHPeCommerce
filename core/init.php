@@ -7,4 +7,5 @@ if(mysqli_connect_error()){
 	die();
 }
 
-define('BASEURL', '/phpECommerce/phpECommerce/');
+require_once '../config.php';
+require_once BASEURL.'helpers/helpers.php';
