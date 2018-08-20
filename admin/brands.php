@@ -7,12 +7,46 @@
 	$errors = array();	
 
 
+	if(isset($_GET['delete']) && !empty($_GET['delete'])){
+		$delete_id = sanitize($_GET['delete']);
+		$delete_id = (int)$delete_id;
+		
+
+		$sql = "DELETE FROM brand WHERE id ='$delete_id'";
+		$db -> query($sql);
+	
+		header('Location:brands.php');
+
+
+	 }	
+
+
+
+
+
+
+	 if(isset($_GET['edit']) && !empty($_GET['edit'])){
+	 	$edit_id = sanitize($_GET['edit']);
+	 	$edit_id = (int)$edit_id;
+	 	
+
+	 	$sql = "SELECT * FROM brand WHERE id ='$edit_id'";
+	 	$edit_object = $db -> query($sql);
+	 	$edit_brand = mysqli_fetch_assoc($edit_object);
+
+	 	
+	 }
+
 	// TODO handle the submit click event
 	// check if brand alreadyexists
 	if(isset($_POST['add_submit'])){
 
 		$brand_var = sanitize($_POST['brand']);
 		$brand_query = "SELECT * FROM brand WHERE brand= '$brand_var'";
+		if(isset($_GET['edit'])){
+			$brand_query = "SELECT * FROM brand WHERE brand = '$brand_var' AND id != '$edit_id'";
+		}
+
 		$brand_object = $db -> query($brand_query); 
 		$count = mysqli_num_rows($brand_object);
 		if($count >0){
@@ -31,56 +65,42 @@
 			echo display_errors($errors);
 		}else{
 			$sql = "INSERT INTO brand (brand) VALUES('$brand_var')";
+			if(isset($_GET['edit'])){
+				$sql = "UPDATE brand SET brand = '$brand_var' WHERE id = '$edit_id'";
+			}
 			$db -> query($sql);
 			header('Location:brands.php');
 		}
 
 	}
 
-	if(isset($_GET['delete']) && !empty($_GET['delete'])){
-		$delete_id = sanitize($_GET['delete']);
-		$delete_id = (int)$delete_id;
-		
 
-		$sql = "DELETE FROM brand WHERE id ='$delete_id'";
-		$db -> query($sql);
+
 	
-		header('Location:brands.php');
-
-
-	 }	
-
-
-	 if(isset($_GET['edit']) && !empty($_GET['edit'])){
-	 	$edit_id = sanitize($_GET['edit']);
-	 	$edit_id = (int)$edit_id;
-	 	
-
-	 	$sql = "SELECT * FROM brand WHERE id ='$edit_id'";
-	 	$edit_object = $db -> query($sql);
-	 	$edit_brand = mysqli_fetch_assoc($edit_object);
-
-	 	session_start();
-	 	$_SESSION['edit_value'] = $edit_brand;	
-
-	 	$url = '/phpECommerce/phpECommerce/admin/edit_brand.php';
-	 	open_page($url);
-	 	close_page();
-	 }
 	
 	 
-    
+    $brand_value = null;
+	 if(isset($_GET['edit'])){
+	 	$brand_value = $edit_brand['brand'];
+	 }else{
+	 	if(isset($_POST['brand'])){
+	 		$brand_value = sanitize($_POST['brand']);
+	 	}
 
+	 }
 
 
 ?>
 <h2 class="text-center">Brands Home Page</h2>
 
 <div class="text-center">
-<form class="form-inline" action="brands.php" method="post">
-	<label for="brand">Add a Brand</label>
-	<input type="text" name="brand" id="brand" class='form-control' value="<?php echo ((isset($_POST['brand']))?$_POST['brand']:''); ?>">
-	<input type="submit" name="add_submit" id="add_submit" class="btn btn-lg btn-success" value="Add Brand">
+<form class="form-inline" action="brands.php<?=((isset($_GET['edit']))?'?edit='.$edit_id:''); ?>" method="post">
+	<label for="brand"><?=((isset($_GET['edit']))?'Edit ':'Add a ') ?>Brand</label>
+	<input type="text" name="brand" id="brand" class='form-control' value="<?= $brand_value; ?>">
+	<?php if(isset($_GET['edit'])): ?>
+		<a href="brands.php" class="btn btn-default">Cancel</a>
+    <?php endif; ?>
+	<input type="submit" name="add_submit" id="add_submit" class="btn btn-lg btn-success" value="<?=((isset($_GET['edit']))?'Edit ':'Add ')?>Brand">
 </form>
 </div>
 
