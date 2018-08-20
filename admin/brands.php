@@ -36,7 +36,42 @@
 		}
 
 	}
+
+	if(isset($_GET['delete']) && !empty($_GET['delete'])){
+		$delete_id = sanitize($_GET['delete']);
+		$delete_id = (int)$delete_id;
+		
+
+		$sql = "DELETE FROM brand WHERE id ='$delete_id'";
+		$db -> query($sql);
+	
+		header('Location:brands.php');
+
+
+	 }	
+
+
+	 if(isset($_GET['edit']) && !empty($_GET['edit'])){
+	 	$edit_id = sanitize($_GET['edit']);
+	 	$edit_id = (int)$edit_id;
+	 	
+
+	 	$sql = "SELECT * FROM brand WHERE id ='$edit_id'";
+	 	$edit_object = $db -> query($sql);
+	 	$edit_brand = mysqli_fetch_assoc($edit_object);
+
+	 	session_start();
+	 	$_SESSION['edit_value'] = $edit_brand;	
+
+	 	$url = '/phpECommerce/phpECommerce/admin/edit_brand.php';
+	 	open_page($url);
+	 	close_page();
+	 }
+	
 	 
+    
+
+
 
 ?>
 <h2 class="text-center">Brands Home Page</h2>
@@ -58,7 +93,7 @@
 		<tr>
 			<td><a href="brands.php?edit=<?php echo $brand_entry['id']?>"><span class="glyphicon glyphicon-pencil"></span></a></td>
 			<td><?php echo $brand_entry['brand']?></td>
-			<td><a href="brands.php?delete=<?php echo $brand_entry['id']?>" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-trash"></span></a></td>
+			<td><a href="brands.php?delete=<?php echo $brand_entry['id']?>" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-trash" onclick=""></span></a></td>
 		</tr>
 		<?php endwhile; ?>
 	</tbody>
