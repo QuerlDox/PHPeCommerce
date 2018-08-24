@@ -43,6 +43,20 @@
 
     } 
 
+
+    if(isset($_GET['delete']) && !empty($_GET['delete'])){
+    	$delete_id =  sanitize($_GET['delete']);
+    	$delete_id = (int)$delete_id;
+    	$delete_query = "DELETE from categories WHERE id = '$delete_id' ";
+    	$db -> query($delete_query);
+    	header('Location:categories.php');
+    }
+
+
+    if(isset($_GET['edit']) && !empty($_GET['edit'])){
+    	
+    }
+
 ?>
 
 <h2 class="text-center">Categories Home Page</h2>
@@ -97,7 +111,7 @@
 							<td>Parent</td>
 						    <td>
 						    	<a href="categories.php?edit=<?= $_parent['id']?>" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-pencil"></span></a>
-						    	<a href="brands.php?delete=<?= $_parent['id']?>" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-trash"></span></a>
+						    	<a href="categories.php?delete=<?= $_parent['id']?>" class="btn btn-xs btn-default"><span class="glyphicon glyphicon-trash"></span></a>
 						    </td> 
 						</tr>
 
