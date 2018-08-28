@@ -37,6 +37,9 @@
     		
     	}else{
     		$sql = "INSERT INTO categories (category, parent) VALUES ('$category_input', '$parent_input')";
+    		if(isset($_GET['edit'])){
+    			$sql = "UPDATE categories SET category ='$category_input' WHERE parent = '$parent_input' AND id = '$_GET[edit]'";
+    		}
     		$db -> query($sql);
     		header('Location:categories.php');
     	}
@@ -47,28 +50,64 @@
     if(isset($_GET['delete']) && !empty($_GET['delete'])){
     	$delete_id =  sanitize($_GET['delete']);
     	$delete_id = (int)$delete_id;
-    	$delete_query = "DELETE from categories WHERE id = '$delete_id' ";
-    	$db -> query($delete_query);
-    	header('Location:categories.php');
+    	$check_query = "SELECT * FROM categories WHERE parent= $delete_id";
+    	$check_result = $db -> query($check_query);
+    	$count = mysqli_num_rows($check_result);
+    	if($count>0){
+    		$errors[] .= ' is a parent and has existing child categories ';
+    	}
+    	if(!empty($errors)){
+    		$display = display_errors($errors);
+    	 	show_errors($display);
+    	}
+    	else{
+    		
+    		$delete_query = "DELETE from categories WHERE id = '$delete_id' ";
+	    	$db -> query($delete_query);
+    		header('Location:categories.php');    	
+    	}
     }
+
 
 
     if(isset($_GET['edit']) && !empty($_GET['edit'])){
-    	
-    }
+    	// sanitize the value
+    	// get the database entry for the edit value
+    	// preserve the edit id value in the form
+    	// get the corresponding category value of the edit id
+    	//$edit_parent = array();
+    	$edit_id = sanitize($_GET['edit']);
+    	$edit_id = (int)$edit_id;
+ 		$edit_query =  "SELECT * FROM categories WHERE id='$edit_id'";
+ 		$edit_result = $db->query($edit_query);
+ 		$edit_value = mysqli_fetch_assoc($edit_result);    	
+ 		$edit_category =  $edit_value['category'];
+ 		$edit_parent_id = $edit_value['parent'];
+ 		$sql = "SELECT * FROM categories WHERE id='$edit_parent_id'";
 
+ 		$parent_result = $db->query($sql);
+ 		if(mysqli_num_rows($parent_result)>0){
+ 		$parent_value = mysqli_fetch_assoc($parent_result);
+ 		$edit_parent = $parent_value['category'];
+
+ 		}else{
+ 			$edit_parent = 'Parent';
+ 			$edit_parent_id = 0;	
+ 		}
+ 	}
 ?>
 
 <h2 class="text-center">Categories Home Page</h2>
 <div class="row">
 	<div class="col-md-6">
-		<form class="form" action="categories.php" method="post">
+		<form class="form" action="categories.php<?=((isset($_GET['edit']))?'?edit='.$edit_id:''); ?>" method="post">
 			<div id="errors"></div>
-			<legend>Add A Category</legend>
+			<legend><?=((isset($_GET['edit']))?'Edit':'Add a') ?>  Category</legend>
 			<div class="form-group">
 				<label for="parent">Parent</label>
+
 				<select class="form-control" id="parent_input" name="parent_input">
-					<option value="0">Parent</option>
+					<option value="<?=((isset($_GET['edit']))?$edit_parent_id:'0') ?> "><?=((isset($_GET['edit']))?$edit_parent:'Parent'); ?> </option>
 					<?php foreach ($parent as $_parent) { ?>
 						<option value="<?= $_parent['id']?>"><?= $_parent['category'] ?></option>
 				     <?php } ?>
@@ -77,11 +116,11 @@
 
 			<div class="form-group">
 				<label for="category">Category</label>
-				<input type="text" class="form-control" name="category_input" id="category_input">
+				<input type="text" class="form-control" name="category_input" id="category_input" value="<?=((isset($_GET['edit']))?$edit_category:''); ?>">
 			</div>
 
 			<div class="form-group">
-				<input type="submit" class="btn btn-success" value="Add Category">
+				<input type="submit" class="btn btn-success" value="<?= ((isset($_GET['edit']))?'Save':'Add')?> Category">
 			</div>
 		</form>
 	</div>
@@ -98,6 +137,7 @@
 					<th>Category</th><th>Parent</th><th></th>
 				</tr>
 			</thead>
+			<div id="errors"></div>
 			<tbody>
 
 				<?php foreach ($parent as $_parent) { 
