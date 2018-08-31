@@ -7,6 +7,10 @@
 		</script>";
 	}
 
+	function currency($price){
+		return '$'.number_format($price,2);
+	}
+
 	function display_errors($errors){
 		$display = '<ul class="bg-danger">';
 		foreach ($errors as $error) {
