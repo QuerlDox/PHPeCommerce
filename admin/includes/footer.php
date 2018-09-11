@@ -1,6 +1,9 @@
 
 	<footer class="text-center" id="footer">&copy; Copyright 2017-2018  Harold's Boutique</footer>
 	<script type="text/javascript">
+		function updateSizes(){
+			alert("update sizes");
+		}
 		function get_child_options(){
 			var parent_id = jQuery('#parent').val();
 			jQuery.ajax({

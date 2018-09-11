@@ -56,7 +56,7 @@
 				</div>
 				<div class="form-group col-md-3">
 					
-					<button class="btn btn-default form-control" onclick="jQuery('#sizes_modal').modal(toggle);return false;">Quantity & Sizes</button>
+					<button class="btn btn-default form-control" onclick="jQuery('#sizes_modal').modal('toggle');return false;">Quantity & Sizes</button>
 				</div>
 				<div class="form-group col-md-3">
 					<label for="sizes">Sizes & Quantity Preview</label>
@@ -80,7 +80,26 @@
 			</div>
 		</form>
 		
-
+		<!-- Modal -->
+		<div class="modal fade" id="sizes_modal" tabindex="-1" role="dialog" aria-labelledby="sizes_modal_label" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h4 class="modal-title" id="sizes_modal_label">Sizes & Quantity</h4>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		          <span aria-hidden="true">&times;</span>
+		        </button>
+		      </div>
+		      <div class="modal-body">
+		        ...
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-primary" onclick="updateSizes();jQuery('#sizes_modal').modal('toggle'); return false;">Save changes</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
 
   <?php  }
  
